@@ -1,0 +1,30 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /
+
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  application:
+    name: clean
+  datasource:
+    url: jdbc:mysql://localhost:3306/cleanboard?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+redis:
+  host: localhost
+  port: 6379
+
+jwt:
+  secret: "nE93bE6Fv2x9mGZ1pU4qK7sP0yT8dW5rH2aC6jB9vQ1zX3tF7gR"

@@ -13,4 +13,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
 	}
+	
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
  }

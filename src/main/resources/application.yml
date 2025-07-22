@@ -4,10 +4,11 @@ server:
     context-path: /
 
 spring:
-  mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    cache: false
   application:
     name: clean
   datasource:
@@ -21,6 +22,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  security:
+    debug: true
 
 redis:
   host: localhost
@@ -28,3 +31,9 @@ redis:
 
 jwt:
   secret: "nE93bE6Fv2x9mGZ1pU4qK7sP0yT8dW5rH2aC6jB9vQ1zX3tF7gR"
+
+  springdoc:
+    swagger-ui:
+      path: /swagger-ui.html
+    api-docs:
+      path: /v3/api-docs

@@ -61,5 +61,10 @@ public class JwtTokenProvider {
 		}
 	}
 	
+	public long getRefreshTokenExpireTime()
+	{
+		return refreshTokenValidity;
+	}
+	
 	
 }

@@ -5,10 +5,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.board.clean.auth.dto.JoinRequestDto;
 import com.board.clean.auth.dto.LoginRequestDto;
 import com.board.clean.auth.dto.LoginResponseDto;
+import com.board.clean.auth.repository.RefreshTokenRepository;
 import com.board.clean.global.jwt.JwtTokenProvider;
 import com.board.clean.user.domain.User;
 import com.board.clean.user.repository.UserRepository;
@@ -21,6 +23,7 @@ public class AuthService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final RefreshTokenRepository refreshTokenRepository;
 	
 	public LoginResponseDto login(LoginRequestDto request) {
 		
@@ -35,10 +38,11 @@ public class AuthService {
 		
 		String accessToken = jwtTokenProvider.generateAccessToken(user);
 		String refreshToken = jwtTokenProvider.generateRefreshToken(user);
+		
+		refreshTokenRepository.save(user.getId(), refreshToken, jwtTokenProvider.getRefreshTokenExpireTime());		
 				
 		return LoginResponseDto.builder()
-				.accessToken(accessToken)
-				.refreshToken(refreshToken)
+				.accessToken(accessToken)				
 				.email(user.getEmail())
 				.name(user.getName())
 				.build();
@@ -64,4 +68,19 @@ public class AuthService {
 		userRepository.save(user);
 	}
 	
+	
+	@Transactional
+	public String reissueAccessToken(String expiredAccessToken) {
+		
+		long userId = Long.parseLong(jwtTokenProvider.getId(expiredAccessToken));
+		String savedRefreshToken = refreshTokenRepository.findByUserId(userId).orElseThrow(()-> new RuntimeException("Refresh Token not found. 로그인 필요."));
+		
+		if(!jwtTokenProvider.validateToken(savedRefreshToken)) {
+			throw new RuntimeException("Refresh Token expired or invalid. 로그인 필요.");
+		}
+		
+		String newAccessToken = jwtTokenProvider.generateAccessToken(userRepository.findById(userId).get());
+		
+		return newAccessToken;
+	}
 }

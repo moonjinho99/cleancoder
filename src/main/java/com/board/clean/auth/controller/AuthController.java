@@ -8,7 +8,13 @@ public class AuthController {
 
 	@GetMapping("/login")
 	public String loginPage()
-	{
+	{		
 		return "login";
+	}
+	
+	@GetMapping("/signup")
+	public String signupPage()
+	{		
+		return "signup";
 	}
 }

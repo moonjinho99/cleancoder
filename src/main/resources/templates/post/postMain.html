@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanCoder - 코드 피드백 커뮤니티</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        /* 헤더 스타일 */
+        .header {
+            background: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #9ACD32;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: '</>';
+            font-size: 32px;
+            color: #ADFF2F;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #9ACD32;
+            box-shadow: 0 0 0 3px rgba(154, 205, 50, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #9ACD32;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #8BC34A;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .write-btn {
+            background: linear-gradient(135deg, #9ACD32, #ADFF2F);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .write-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 205, 50, 0.3);
+        }
+
+        .profile-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9ACD32, #ADFF2F);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 메인 컨테이너 */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* 게시글 피드 */
+        .feed {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .post {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        /* 게시글 헤더 */
+        .post-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9ACD32, #ADFF2F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .post-time {
+            color: #666;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        /* 코드 섹션 */
+        .code-section {
+            margin: 15px 20px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: #2d2d2d;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #404040;
+        }
+
+        .code-language {
+            color: #9ACD32;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .code-btn:hover {
+            color: #9ACD32;
+        }
+
+        .code-content {
+            padding: 20px;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            display: flex;
+            margin-bottom: 5px;
+        }
+
+        .line-number {
+            color: #666;
+            margin-right: 15px;
+            user-select: none;
+            min-width: 25px;
+            text-align: right;
+        }
+
+        .line-code {
+            flex: 1;
+        }
+
+        /* 구문 강조 */
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .function { color: #50fa7b; }
+        .number { color: #bd93f9; }
+
+        /* 게시글 설명 */
+        .post-description {
+            padding: 0 20px 15px 20px;
+            color: #333;
+            font-size: 15px;
+        }
+
+        /* 게시글 하단 */
+        .post-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .action-btn.liked {
+            color: #ff4757;
+        }
+
+        .action-btn.liked:hover {
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 15px;
+            }
+            
+            .search-container {
+                margin: 0 15px;
+            }
+            
+            .main-container {
+                padding: 0 15px;
+            }
+            
+            .post-header {
+                padding: 15px;
+            }
+            
+            .code-section {
+                margin: 10px 15px;
+            }
+            
+            .post-description {
+                padding: 0 15px 10px 15px;
+            }
+            
+            .post-footer {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">CleanCoder</a>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="코드, 언어, 사용자를 검색해보세요...">
+                <button class="search-btn">🔍</button>
+            </div>
+            
+            <div class="header-actions">
+                <button class="write-btn" onclick="alert('글쓰기 페이지로 이동합니다!')">✏️ 코드 공유</button>
+                <button class="profile-btn" onclick="alert('프로필 메뉴가 열립니다!')">
+                    <div style="background: linear-gradient(135deg, #9ACD32, #ADFF2F); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">김</div>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨테이너 -->
+    <div class="main-container">
+        <div class="feed">
+            <!-- 게시글 1 -->
+            <article class="post">
+                <div class="post-header">
+                    <div class="author-avatar">박</div>
+                    <div class="author-info">
+                        <div class="author-name">박개발자</div>
+                        <div class="post-time">3시간 전</div>
+                    </div>
+                </div>
+                
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-language">JavaScript</span>
+                        <div class="code-actions">
+                            <button class="code-btn" title="복사">📋</button>
+                            <button class="code-btn" title="전체화면">⛶</button>
+                        </div>
+                    </div>
+                    <div class="code-content">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span class="line-code"><span class="comment">// 배열에서 중복 제거하는 함수</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">2</span>
+                            <span class="line-code"><span class="keyword">function</span> <span class="function">removeDuplicates</span>(arr) {</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">3</span>
+                            <span class="line-code">&nbsp;&nbsp;<span class="keyword">return</span> [...<span class="keyword">new</span> Set(arr)];</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">4</span>
+                            <span class="line-code">}</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">5</span>
+                            <span class="line-code"></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">6</span>
+                            <span class="line-code"><span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>];</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">7</span>
+                            <span class="line-code">console.log(<span class="function">removeDuplicates</span>(numbers));</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-description">
+                    배열에서 중복을 제거하는 간단한 방법을 공유합니다! Set을 사용하면 한 줄로 해결되네요. 더 효율적인 방법이 있을까요?
+                </div>
+                
+                <div class="post-footer">
+                    <button class="action-btn" onclick="toggleLike(this)">
+                        ❤️ <span>24</span>
+                    </button>
+                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
+                        💬 <span>8</span>
+                    </button>
+                </div>
+            </article>
+
+            <!-- 게시글 2 -->
+            <article class="post">
+                <div class="post-header">
+                    <div class="author-avatar">이</div>
+                    <div class="author-info">
+                        <div class="author-name">이코더</div>
+                        <div class="post-time">5시간 전</div>
+                    </div>
+                </div>
+                
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-language">Python</span>
+                        <div class="code-actions">
+                            <button class="code-btn" title="복사">📋</button>
+                            <button class="code-btn" title="전체화면">⛶</button>
+                        </div>
+                    </div>
+                    <div class="code-content">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span class="line-code"><span class="comment"># 피보나치 수열 생성기</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">2</span>
+                            <span class="line-code"><span class="keyword">def</span> <span class="function">fibonacci</span>(n):</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">3</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;a, b = <span class="number">0</span>, <span class="number">1</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">4</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> _ <span class="keyword">in</span> range(n):</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">5</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">yield</span> a</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">6</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a, b = b, a + b</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">7</span>
+                            <span class="line-code"></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">8</span>
+                            <span class="line-code">print(list(<span class="function">fibonacci</span>(<span class="number">10</span>)))</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-description">
+                    제너레이터를 사용한 피보나치 수열입니다. 메모리 효율적이라고 하는데, 이 코드에서 개선할 점이 있을까요?
+                </div>
+                
+                <div class="post-footer">
+                    <button class="action-btn" onclick="toggleLike(this)">
+                        ❤️ <span>31</span>
+                    </button>
+                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
+                        💬 <span>12</span>
+                    </button>
+                </div>
+            </article>
+
+            <!-- 게시글 3 -->
+            <article class="post">
+                <div class="post-header">
+                    <div class="author-avatar">최</div>
+                    <div class="author-info">
+                        <div class="author-name">최신입</div>
+                        <div class="post-time">1일 전</div>
+                    </div>
+                </div>
+                
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-language">Java</span>
+                        <div class="code-actions">
+                            <button class="code-btn" title="복사">📋</button>
+                            <button class="code-btn" title="전체화면">⛶</button>
+                        </div>
+                    </div>
+                    <div class="code-content">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span class="line-code"><span class="comment">// 이진 검색 구현</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">2</span>
+                            <span class="line-code"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="function">binarySearch</span>(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> target) {</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">3</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> left = <span class="number">0</span>, right = arr.length - <span class="number">1</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">4</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span> (left <= right) {</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">5</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">6</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (arr[mid] == target) <span class="keyword">return</span> mid;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">7</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (arr[mid] < target) left = mid + <span class="number">1</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">8</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> right = mid - <span class="number">1</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">9</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">10</span>
+                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> -<span class="number">1</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">11</span>
+                            <span class="line-code">}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-description">
+                    알고리즘 스터디에서 이진 검색을 구현해봤습니다. 코드 스타일이나 효율성 면에서 피드백 부탁드려요!
+                </div>
+                
+                <div class="post-footer">
+                    <button class="action-btn" onclick="toggleLike(this)">
+                        ❤️ <span>18</span>
+                    </button>
+                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
+                        💬 <span>15</span>
+                    </button>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <script>
+    
+	    const session = JSON.parse(sessionStorage.getItem('userSession') || '{}');
+	    if (!session.accessToken) {
+	        window.location.href = "/auth/login"; // JS에서 로그인 페이지로 이동
+	    }
+    
+        // 좋아요 토글 기능
+        function toggleLike(button) {
+            const isLiked = button.classList.contains('liked');
+            const countSpan = button.querySelector('span');
+            let count = parseInt(countSpan.textContent);
+            
+            if (isLiked) {
+                button.classList.remove('liked');
+                button.innerHTML = `❤️ <span>${count - 1}</span>`;
+            } else {
+                button.classList.add('liked');
+                button.innerHTML = `❤️ <span>${count + 1}</span>`;
+            }
+        }
+
+        // 검색 기능
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchQuery = this.value;
+                if (searchQuery.trim()) {
+                    alert(`"${searchQuery}" 검색 결과를 보여줍니다.`);
+                }
+            }
+        });
+
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const searchInput = document.querySelector('.search-input');
+            const searchQuery = searchInput.value;
+            if (searchQuery.trim()) {
+                alert(`"${searchQuery}" 검색 결과를 보여줍니다.`);
+            }
+        });
+
+        // 코드 복사 기능
+        document.querySelectorAll('.code-btn').forEach(btn => {
+            if (btn.title === '복사') {
+                btn.addEventListener('click', function() {
+                    const codeContent = this.closest('.code-section').querySelector('.code-content');
+                    const codeText = Array.from(codeContent.querySelectorAll('.line-code'))
+                        .map(line => line.textContent)
+                        .join('\n');
+                    
+                    navigator.clipboard.writeText(codeText).then(() => {
+                        alert('코드가 클립보드에 복사되었습니다!');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

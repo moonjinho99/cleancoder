@@ -29,9 +29,9 @@ public class AuthApiController {
 		
 	@Operation(summary = "로그인 API", description = "이메일과 패스워드로 로그인합니다.")
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request){
+	public ResponseEntity<?> login(@RequestBody LoginRequestDto request){
 		log.info("=======================[Login]=======================");
-		return ResponseEntity.ok(authService.login(request));
+		return authService.login(request);
 	}
 	
 	@Operation(summary = "회원가입 API", description = "회원가입")

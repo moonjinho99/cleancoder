@@ -1,20 +1,22 @@
-package com.board.clean.auth.controller;
+package com.board.clean.page.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class AuthController {
-
+@RequestMapping("/auth")
+public class AuthPageController {
+		
 	@GetMapping("/login")
 	public String loginPage()
 	{		
-		return "login";
+		return "/auth/login";
 	}
 	
 	@GetMapping("/signup")
 	public String signupPage()
 	{		
-		return "signup";
+		return "/auth/signup";
 	}
 }

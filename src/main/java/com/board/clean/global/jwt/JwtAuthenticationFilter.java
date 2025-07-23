@@ -1,32 +1,32 @@
 package com.board.clean.global.jwt;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.board.clean.user.domain.User;
-import com.board.clean.user.repository.UserRepository;
+import com.board.clean.auth.service.CustomUserDetailsSerivce;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private final UserRepository userRepository;
-	
+	private final CustomUserDetailsSerivce userDetailsService;	
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,17 +34,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		
 		String token = resolveToken(request);
 		
-		if(token != null && jwtTokenProvider.validateToken(token)) {
-			Long id = Long.parseLong(jwtTokenProvider.getId(token));
-			
-			User foundUser = userRepository.findById(id)
-				    .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
-			
-			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(foundUser, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_"+foundUser.getRole())));
-	
-			SecurityContextHolder.getContext().setAuthentication(auth);
+		if(token == null)
+		{
+			filterChain.doFilter(request, response);
+			return;
 		}
 		
+		//User의 Pk
+		String id = jwtTokenProvider.getId(token);		
+
+		if(id != null && SecurityContextHolder.getContext().getAuthentication() != null)
+		{			
+			UserDetails userDetails = userDetailsService.loadUserByUsername(id);
+			
+			if(token != null && jwtTokenProvider.validateToken(token)) {					
+				 UsernamePasswordAuthenticationToken authentication =
+		                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+		                SecurityContextHolder.getContext().setAuthentication(authentication);
+			}			
+		}
+							
 		filterChain.doFilter(request, response);
 	}
 	

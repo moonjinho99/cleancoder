@@ -168,7 +168,7 @@
 
         <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
             <p style="color: #666; margin-bottom: 15px;">계정이 없으신가요?</p>
-            <button onclick="window.location.href='signup'" style="
+            <button onclick="window.location.href='/auth/signup'" style="
                 background: white;
                 color: #9ACD32;
                 border: 2px solid #9ACD32;
@@ -182,63 +182,117 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
-            
-            // 메시지 초기화
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-            
-            // 로그인 데이터 준비
-            const loginData = {
-                email: email,
-                password: password
-            };
-            
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(loginData)
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    successMessage.textContent = '로그인 성공!';
-                    successMessage.style.display = 'block';
-                    
-                    // 로그인 성공 후 페이지 이동 (예시)
-                    setTimeout(() => {
-                        window.location.href = '/dashboard'; // 대시보드나 메인 페이지로 이동
-                    }, 1500);
-                    
-                } else {
-                    const error = await response.json();
-                    errorMessage.textContent = error.message || '로그인에 실패했습니다.';
-                    errorMessage.style.display = 'block';
-                }
-                
-            } catch (error) {
-                console.error('로그인 오류:', error);
-                errorMessage.textContent = '서버 연결에 실패했습니다.';
-                errorMessage.style.display = 'block';
-            }
-        });
+<script>
 
-        // Enter 키로 로그인 실행
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
-            }
-        });
-    </script>
+	const session = JSON.parse(sessionStorage.getItem('userSession') || '{}');
+	if (session.accessToken) {
+	    window.location.href = "/post/main"; // JS에서 로그인 페이지로 이동
+	}
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+
+        const loginData = {
+            email: email,
+            password: password
+        };
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                const { accessToken, email, name } = result;
+
+                // 토큰 및 유저 정보 sessionStorage에 저장
+                const userSession = {
+                    accessToken,
+                    email,
+                    name,
+                    isLoggedIn: true,
+                    loginTime: new Date().toISOString()
+                };
+                sessionStorage.setItem('userSession', JSON.stringify(userSession));
+
+                // authFetch 등록
+                window.authFetch = function (url, options = {}) {
+                    const stored = JSON.parse(sessionStorage.getItem('userSession') || '{}');
+                    return fetch(url, {
+                        ...options,
+                        headers: {
+                            ...(options.headers || {}),
+                            'Authorization': `Bearer ${stored.accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                };
+
+                // 유틸 함수 등록
+                window.getUserSession = () => JSON.parse(sessionStorage.getItem('userSession') || 'null');
+                window.logout = () => {
+                    sessionStorage.removeItem('userSession');
+                    window.location.href = '/login';
+                };
+
+                successMessage.textContent = `${name}님, 환영합니다!`;
+                successMessage.style.display = 'block';
+
+                console.log('로그인 성공:', { accessToken, email, name });
+
+                setTimeout(() => {
+                    window.location.href = '/post/main';
+                }, 1500);
+            } else {
+	                const contentType = response.headers.get("content-type") || "";
+	                
+	                if (contentType.includes("application/json")) {
+	                    const error = await response.json();
+	                    errorMessage.textContent = error.message || '로그인에 실패했습니다.';
+	                } else {
+	                    const errorText = await response.text();
+	                    errorMessage.textContent = `에러: ${errorText}` || '로그인에 실패했습니다.';
+	                }
+	
+	                errorMessage.style.display = 'block';
+	            }        
+            } catch (error) {
+            console.error('로그인 오류:', error);
+            errorMessage.textContent = '서버 연결에 실패했습니다.';
+            errorMessage.style.display = 'block';
+        }
+    });
+
+    // 이미 로그인된 경우 자동 리다이렉트
+    window.addEventListener('load', function () {
+        const stored = JSON.parse(sessionStorage.getItem('userSession') || 'null');
+        if (stored && stored.isLoggedIn) {
+            console.log('이미 로그인된 사용자:', stored);
+            window.location.href = '/post/main';
+        }
+    });
+
+    // Enter 키로 로그인 실행
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+    });
+</script>
+
+
 </body>
 </html>

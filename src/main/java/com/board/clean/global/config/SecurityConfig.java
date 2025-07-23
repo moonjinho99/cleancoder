@@ -2,7 +2,9 @@ package com.board.clean.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 	
-	private static final String[] ALLOWED_BACK_PATH = {
+	private static final String[] ALLOWED_PATH = {
 			"/api/auth/**",
 			"/login",
 			"/signup",
@@ -29,15 +31,23 @@ public class SecurityConfig {
             "/swagger-ui/index.html",
             "/v3/api-docs/**",
             "/swagger-resources/**",
-            "/webjars/**"
+            "/webjars/**",
+            "/auth/**",
+            "/",
+            "/post/**"
+           
     };
 	
-	private static final String[] ALLOWED_PAGE_PATH = {
-			"/login",
-			"/signup"           
+	private static final String[] ACCESS_USER_PATH = {
+			"/api/post/**"
     };
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	@Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,8 +58,8 @@ public class SecurityConfig {
 	        .httpBasic(httpBasic -> httpBasic.disable())
 	        .formLogin(form -> form.disable())
 	        .authorizeHttpRequests(auth -> auth
-	        	.requestMatchers(ALLOWED_PAGE_PATH).permitAll()
-	            .requestMatchers(ALLOWED_BACK_PATH).permitAll()
+	        	.requestMatchers(ACCESS_USER_PATH).hasRole("USER")
+	            .requestMatchers(ALLOWED_PATH).permitAll()
 	            .anyRequest().authenticated()
 	        )
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

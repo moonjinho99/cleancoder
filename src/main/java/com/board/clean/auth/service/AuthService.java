@@ -1,21 +1,29 @@
 package com.board.clean.auth.service;
 
 
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.board.clean.auth.dto.JoinRequestDto;
 import com.board.clean.auth.dto.LoginRequestDto;
 import com.board.clean.auth.dto.LoginResponseDto;
 import com.board.clean.auth.repository.RefreshTokenRepository;
+import com.board.clean.auth.vo.CustomUserDetails;
 import com.board.clean.global.jwt.JwtTokenProvider;
 import com.board.clean.user.domain.User;
 import com.board.clean.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,28 +32,32 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final AuthenticationManager authenticationManager;
 	
-	public LoginResponseDto login(LoginRequestDto request) {
-		
-		User user = userRepository.findByEmail(request.getEmail())
-		        .orElseThrow(() -> new UsernameNotFoundException("이메일 없음"));
+	
+	public ResponseEntity<?> login(LoginRequestDto request) {				
+		try {					
 
-		
-		if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-		{
-			throw new BadCredentialsException("패스워드 불일치");
-		}
-		
-		String accessToken = jwtTokenProvider.generateAccessToken(user);
-		String refreshToken = jwtTokenProvider.generateRefreshToken(user);
-		
-		refreshTokenRepository.save(user.getId(), refreshToken, jwtTokenProvider.getRefreshTokenExpireTime());		
-				
-		return LoginResponseDto.builder()
-				.accessToken(accessToken)				
-				.email(user.getEmail())
-				.name(user.getName())
-				.build();
+			Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));						
+			CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();		
+			User user = userDetails.getUser();			
+			
+			String accessToken = jwtTokenProvider.generateAccessToken(user);
+			String refreshToken = jwtTokenProvider.generateRefreshToken(user);
+			
+			refreshTokenRepository.save(user.getId(), refreshToken, jwtTokenProvider.getRefreshTokenExpireTime());		
+					
+			LoginResponseDto dto = LoginResponseDto.builder()
+			.accessToken(accessToken)				
+			.email(user.getEmail())
+			.name(user.getName())
+			.build();			
+			
+			return ResponseEntity.ok(dto);
+		}catch(BadCredentialsException e)
+		{			
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "이메일 또는 패스워드가 존재하지 않습니다."));
+		}		
 	}
 	
 	public void signup(JoinRequestDto request)

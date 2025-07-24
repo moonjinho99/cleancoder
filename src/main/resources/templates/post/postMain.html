@@ -365,7 +365,7 @@
             </div>
             
             <div class="header-actions">
-                <button class="write-btn" onclick="alert('글쓰기 페이지로 이동합니다!')">✏️ 코드 공유</button>
+                <button class="write-btn" onclick="moveWritePage()">✏️ 코드 공유</button>
                 <button class="profile-btn" onclick="alert('프로필 메뉴가 열립니다!')">
                     <div style="background: linear-gradient(135deg, #9ACD32, #ADFF2F); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">김</div>
                 </button>
@@ -375,228 +375,245 @@
 
     <!-- 메인 컨테이너 -->
     <div class="main-container">
-        <div class="feed">
-            <!-- 게시글 1 -->
-            <article class="post">
-                <div class="post-header">
-                    <div class="author-avatar">박</div>
-                    <div class="author-info">
-                        <div class="author-name">박개발자</div>
-                        <div class="post-time">3시간 전</div>
-                    </div>
-                </div>
-                
-                <div class="code-section">
-                    <div class="code-header">
-                        <span class="code-language">JavaScript</span>
-                        <div class="code-actions">
-                            <button class="code-btn" title="복사">📋</button>
-                            <button class="code-btn" title="전체화면">⛶</button>
-                        </div>
-                    </div>
-                    <div class="code-content">
-                        <div class="code-line">
-                            <span class="line-number">1</span>
-                            <span class="line-code"><span class="comment">// 배열에서 중복 제거하는 함수</span></span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">2</span>
-                            <span class="line-code"><span class="keyword">function</span> <span class="function">removeDuplicates</span>(arr) {</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">3</span>
-                            <span class="line-code">&nbsp;&nbsp;<span class="keyword">return</span> [...<span class="keyword">new</span> Set(arr)];</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">4</span>
-                            <span class="line-code">}</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">5</span>
-                            <span class="line-code"></span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">6</span>
-                            <span class="line-code"><span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>];</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">7</span>
-                            <span class="line-code">console.log(<span class="function">removeDuplicates</span>(numbers));</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="post-description">
-                    배열에서 중복을 제거하는 간단한 방법을 공유합니다! Set을 사용하면 한 줄로 해결되네요. 더 효율적인 방법이 있을까요?
-                </div>
-                
-                <div class="post-footer">
-                    <button class="action-btn" onclick="toggleLike(this)">
-                        ❤️ <span>24</span>
-                    </button>
-                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
-                        💬 <span>8</span>
-                    </button>
-                </div>
-            </article>
-
-            <!-- 게시글 2 -->
-            <article class="post">
-                <div class="post-header">
-                    <div class="author-avatar">이</div>
-                    <div class="author-info">
-                        <div class="author-name">이코더</div>
-                        <div class="post-time">5시간 전</div>
-                    </div>
-                </div>
-                
-                <div class="code-section">
-                    <div class="code-header">
-                        <span class="code-language">Python</span>
-                        <div class="code-actions">
-                            <button class="code-btn" title="복사">📋</button>
-                            <button class="code-btn" title="전체화면">⛶</button>
-                        </div>
-                    </div>
-                    <div class="code-content">
-                        <div class="code-line">
-                            <span class="line-number">1</span>
-                            <span class="line-code"><span class="comment"># 피보나치 수열 생성기</span></span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">2</span>
-                            <span class="line-code"><span class="keyword">def</span> <span class="function">fibonacci</span>(n):</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">3</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;a, b = <span class="number">0</span>, <span class="number">1</span></span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">4</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> _ <span class="keyword">in</span> range(n):</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">5</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">yield</span> a</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">6</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a, b = b, a + b</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">7</span>
-                            <span class="line-code"></span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">8</span>
-                            <span class="line-code">print(list(<span class="function">fibonacci</span>(<span class="number">10</span>)))</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="post-description">
-                    제너레이터를 사용한 피보나치 수열입니다. 메모리 효율적이라고 하는데, 이 코드에서 개선할 점이 있을까요?
-                </div>
-                
-                <div class="post-footer">
-                    <button class="action-btn" onclick="toggleLike(this)">
-                        ❤️ <span>31</span>
-                    </button>
-                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
-                        💬 <span>12</span>
-                    </button>
-                </div>
-            </article>
-
-            <!-- 게시글 3 -->
-            <article class="post">
-                <div class="post-header">
-                    <div class="author-avatar">최</div>
-                    <div class="author-info">
-                        <div class="author-name">최신입</div>
-                        <div class="post-time">1일 전</div>
-                    </div>
-                </div>
-                
-                <div class="code-section">
-                    <div class="code-header">
-                        <span class="code-language">Java</span>
-                        <div class="code-actions">
-                            <button class="code-btn" title="복사">📋</button>
-                            <button class="code-btn" title="전체화면">⛶</button>
-                        </div>
-                    </div>
-                    <div class="code-content">
-                        <div class="code-line">
-                            <span class="line-number">1</span>
-                            <span class="line-code"><span class="comment">// 이진 검색 구현</span></span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">2</span>
-                            <span class="line-code"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="function">binarySearch</span>(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> target) {</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">3</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> left = <span class="number">0</span>, right = arr.length - <span class="number">1</span>;</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">4</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span> (left <= right) {</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">5</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">6</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (arr[mid] == target) <span class="keyword">return</span> mid;</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">7</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (arr[mid] < target) left = mid + <span class="number">1</span>;</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">8</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> right = mid - <span class="number">1</span>;</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">9</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;}</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">10</span>
-                            <span class="line-code">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> -<span class="number">1</span>;</span>
-                        </div>
-                        <div class="code-line">
-                            <span class="line-number">11</span>
-                            <span class="line-code">}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="post-description">
-                    알고리즘 스터디에서 이진 검색을 구현해봤습니다. 코드 스타일이나 효율성 면에서 피드백 부탁드려요!
-                </div>
-                
-                <div class="post-footer">
-                    <button class="action-btn" onclick="toggleLike(this)">
-                        ❤️ <span>18</span>
-                    </button>
-                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
-                        💬 <span>15</span>
-                    </button>
-                </div>
-            </article>
+        <div class="feed" id="postFeed">
+            <!-- 게시글이 동적으로 로드됩니다 -->
+            <div id="loadingSpinner" style="text-align: center; padding: 40px; color: #666;">
+                <div style="font-size: 18px;">게시글을 불러오는 중...</div>
+            </div>
         </div>
     </div>
 
     <script>
-    
-	    const session = JSON.parse(sessionStorage.getItem('userSession') || '{}');
-	    if (!session.accessToken) {
-	        window.location.href = "/auth/login"; // JS에서 로그인 페이지로 이동
-	    }
-    
+        // 게시글 데이터를 로드하는 함수
+        async function loadPosts() {
+            try {
+                // 로그인 확인
+                const userSession = sessionStorage.getItem("userSession");                
+                const parseSession = JSON.parse(userSession);
+                
+                 if (userSession == null || parseSession.accessToken == null) {
+                    alert('로그인이 필요합니다.');
+                    window.location.href = '/auth/login';
+                    return;
+                }  
+ 
+                const response = await fetch('/api/post/data', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${parseSession.accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const posts = await response.json();
+                    renderPosts(posts);
+                } else if (response.status === 401) {
+                    alert('로그인이 만료되었습니다.');
+                    window.location.href = '/auth/login';
+                } else {
+                    throw new Error('게시글을 불러오는데 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('게시글 로드 오류:', error);
+                document.getElementById('loadingSpinner').innerHTML = 
+                    '<div style="color: #ff4757;">게시글을 불러오는데 실패했습니다. 새로고침해주세요.</div>';
+            }
+        }
+
+        // 게시글을 렌더링하는 함수
+        function renderPosts(posts) {
+            const feedContainer = document.getElementById('postFeed');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            // 로딩 스피너 제거
+            if (loadingSpinner) {
+                loadingSpinner.remove();
+            }
+
+            if (!posts || posts.length === 0) {
+                feedContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">아직 게시글이 없습니다.</div>';
+                return;
+            }
+
+            posts.forEach(post => {
+                const postElement = createPostElement(post);
+                feedContainer.appendChild(postElement);
+            });
+        }
+
+        // 개별 게시글 엘리먼트를 생성하는 함수
+        function createPostElement(post) {
+            const article = document.createElement('article');
+            article.className = 'post';
+            
+            // 작성자 이름에서 첫 글자 추출 (아바타용)
+            const avatarLetter = post.writeUserName ? post.writeUserName.charAt(0) : '?';
+            
+            // 시간 형식 변환
+            const timeAgo = formatTimeAgo(post.updateAt);
+            
+            // PostType에 따른 언어 결정
+            const language = getLanguageFromPostType(post.language);
+            
+            article.innerHTML = `
+                <div class="post-header">
+                    <div class="author-avatar">${avatarLetter}</div>
+                    <div class="author-info">
+                        <div class="author-name">${escapeHtml(post.writeUserName || '익명')}</div>
+                        <div class="post-time">${timeAgo}</div>
+                    </div>
+                </div>
+                
+                ${post.title ? `<div class="post-title" style="padding: 0 20px; font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px;">${escapeHtml(post.title)}</div>` : ''}
+                
+                ${post.code ? createCodeSection(post.code, language) : ''}
+                
+                ${post.content ? `<div class="post-description">${escapeHtml(post.content)}</div>` : ''}
+                
+                <div class="post-footer">
+                    <button class="action-btn" onclick="toggleLike(this)">
+                        ❤️ <span>0</span>
+                    </button>
+                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
+                        💬 <span>0</span>
+                    </button>
+                </div>
+            `;
+            
+            return article;
+        }
+
+        // 코드 섹션을 생성하는 함수
+        function createCodeSection(code, language) {
+            const lines = code.split('\n');
+            const codeLines = lines.map((line, index) => {
+                const highlightedLine = highlightSyntax(line, language);
+                return `
+                    <div class="code-line">
+                        <span class="line-number">${index + 1}</span>
+                        <span class="line-code">${highlightedLine}</span>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-language">${language}</span>
+                        <div class="code-actions">
+                            <button class="code-btn" title="복사" onclick="copyCode(this)">📋</button>
+                            <button class="code-btn" title="전체화면">⛶</button>
+                        </div>
+                    </div>
+                    <div class="code-content">
+                        ${codeLines}
+                    </div>
+                </div>
+            `;
+        }
+
+        // language에서 언어 이름을 가져오는 함수
+        function getLanguageFromPostType(language) {
+            const languageMap = {
+                'JAVASCRIPT': 'JavaScript',
+                'PYTHON': 'Python',
+                'JAVA': 'Java',
+                'CSHARP': 'C#',
+                'CPP': 'C++',
+                'C': 'C',
+                'HTML': 'HTML',
+                'CSS': 'CSS',
+                'REACT': 'React',
+                'VUE': 'Vue.js',
+                'ANGULAR': 'Angular',
+                'NODEJS': 'Node.js',
+                'TYPESCRIPT': 'TypeScript',
+                'GO': 'Go',
+                'RUST': 'Rust',
+                'PHP': 'PHP',
+                'RUBY': 'Ruby',
+                'SWIFT': 'Swift',
+                'KOTLIN': 'Kotlin',
+                'SQL': 'SQL'
+            };
+            
+            return languageMap[language] || 'Code';
+        }
+
+        // 간단한 구문 강조 함수
+        function highlightSyntax(line, language) {
+            let highlighted = escapeHtml(line);
+            
+            // 공통 키워드들
+            const keywords = ['function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'class', 'def', 'import', 'from', 'public', 'private', 'static', 'void', 'int', 'string', 'boolean'];
+            
+            // 키워드 강조
+            keywords.forEach(keyword => {
+                const regex = new RegExp(`\\b${keyword}\\b`, 'g');
+                highlighted = highlighted.replace(regex, `<span class="keyword">${keyword}</span>`);
+            });
+            
+            // 문자열 강조 (따옴표)
+            highlighted = highlighted.replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="string">$1$2$1</span>');
+            
+            // 주석 강조
+            highlighted = highlighted.replace(/(\/\/.*$|#.*$)/g, '<span class="comment">$1</span>');
+            highlighted = highlighted.replace(/(\/\*.*?\*\/)/g, '<span class="comment">$1</span>');
+            
+            // 숫자 강조
+            highlighted = highlighted.replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+            
+            return highlighted;
+        }
+
+        // HTML 이스케이프 함수
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 시간 형식 변환 함수
+        function formatTimeAgo(dateTime) {
+            if (!dateTime) return '방금 전';
+            
+            const now = new Date();
+            const postDate = new Date(dateTime);
+            const diffMs = now - postDate;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 60) {
+                return diffMins <= 1 ? '방금 전' : `${diffMins}분 전`;
+            } else if (diffHours < 24) {
+                return `${diffHours}시간 전`;
+            } else if (diffDays < 7) {
+                return `${diffDays}일 전`;
+            } else {
+                return postDate.toLocaleDateString('ko-KR');
+            }
+        }
+
+        // 코드 복사 함수
+        function copyCode(button) {
+            const codeContent = button.closest('.code-section').querySelector('.code-content');
+            const codeText = Array.from(codeContent.querySelectorAll('.line-code'))
+                .map(line => line.textContent)
+                .join('\n');
+            
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✅';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            }).catch(() => {
+                alert('코드 복사에 실패했습니다.');
+            });
+        }
+
         // 좋아요 토글 기능
         function toggleLike(button) {
             const isLiked = button.classList.contains('liked');
@@ -617,7 +634,7 @@
             if (e.key === 'Enter') {
                 const searchQuery = this.value;
                 if (searchQuery.trim()) {
-                    alert(`"${searchQuery}" 검색 결과를 보여줍니다.`);
+                    alert(`"${searchQuery}" 검색 기능은 준비 중입니다.`);
                 }
             }
         });
@@ -626,25 +643,33 @@
             const searchInput = document.querySelector('.search-input');
             const searchQuery = searchInput.value;
             if (searchQuery.trim()) {
-                alert(`"${searchQuery}" 검색 결과를 보여줍니다.`);
+                alert(`"${searchQuery}" 검색 기능은 준비 중입니다.`);
             }
         });
 
-        // 코드 복사 기능
-        document.querySelectorAll('.code-btn').forEach(btn => {
-            if (btn.title === '복사') {
-                btn.addEventListener('click', function() {
-                    const codeContent = this.closest('.code-section').querySelector('.code-content');
-                    const codeText = Array.from(codeContent.querySelectorAll('.line-code'))
-                        .map(line => line.textContent)
-                        .join('\n');
-                    
-                    navigator.clipboard.writeText(codeText).then(() => {
-                        alert('코드가 클립보드에 복사되었습니다!');
-                    });
-                });
+        // 페이지 로드 시 게시글 로드
+        window.addEventListener('load', function() {
+            // 사용자 정보 표시
+            const userSession = window.getUserSession && window.getUserSession();
+            if (userSession && userSession.name) {
+                const profileBtn = document.querySelector('.profile-btn div');
+                if (profileBtn) {
+                    profileBtn.textContent = userSession.name.charAt(0);
+                }
             }
+            
+            // 게시글 로드
+            loadPosts();
         });
+
+        // 새로고침 함수 (전역적으로 사용 가능)
+        window.refreshPosts = loadPosts;      
+        
+        function moveWritePage()
+        {
+        	window.location.href = "/post/write";
+        }
+        
     </script>
 </body>
 </html>

@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginResponseDto {	
 	private String accessToken;
+	private Long id;
 	private String email;
 	private String name;
-	
 }

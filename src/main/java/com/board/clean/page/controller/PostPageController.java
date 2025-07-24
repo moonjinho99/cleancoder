@@ -14,4 +14,10 @@ public class PostPageController {
 		return "/post/postMain";
 	}
 	
+	@GetMapping("/write")
+	public String postWrite()
+	{
+		return "/post/postWrite";
+	}
+	
 }

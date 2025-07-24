@@ -49,6 +49,7 @@ public class AuthService {
 					
 			LoginResponseDto dto = LoginResponseDto.builder()
 			.accessToken(accessToken)				
+			.id(user.getId())
 			.email(user.getEmail())
 			.name(user.getName())
 			.build();			

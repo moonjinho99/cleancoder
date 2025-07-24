@@ -36,6 +36,9 @@ public class Post {
 
     @Lob
     private String code;
+    
+    @Column(nullable = false, length = 30)
+    private String language;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

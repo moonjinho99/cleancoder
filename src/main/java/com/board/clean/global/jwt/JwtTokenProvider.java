@@ -17,7 +17,9 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
@@ -71,6 +73,7 @@ public class JwtTokenProvider {
 			Jwts.parser().setSigningKey(secretkey).parseClaimsJws(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
+			log.error("token valid error : "+e.getMessage());
             return false;
         }
 	}

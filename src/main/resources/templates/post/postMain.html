@@ -475,10 +475,10 @@
                     <button class="action-btn" onclick="toggleLike(this)">
                         ❤️ <span>0</span>
                     </button>
-                    <button class="action-btn" onclick="alert('댓글을 확인합니다!')">
+                    <button class="action-btn" onclick="moveDetailPage(${post.postId})">
                         💬 <span>0</span>
                     </button>
-                </div>
+                </div>                       
             `;
             
             return article;
@@ -670,6 +670,10 @@
         	window.location.href = "/post/write";
         }
         
+        function moveDetailPage(postId)
+		{
+        	window.location.href = `/post/detail?id=${postId}`;
+		}        
     </script>
 </body>
 </html>

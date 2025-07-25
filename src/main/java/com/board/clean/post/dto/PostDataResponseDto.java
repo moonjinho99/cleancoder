@@ -13,6 +13,7 @@ import lombok.Getter;
 public class PostDataResponseDto {
 
 	private String writeUserName;
+	private Long postId;
 	private String title;
 	private String content;
 	private String code;

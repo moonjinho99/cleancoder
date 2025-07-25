@@ -59,11 +59,20 @@ public class JwtTokenProvider {
 	
 	public String getId(String token)
 	{
+		 if (!validateToken(token)) {
+		        throw new JwtException("Invalid token");
+		    }
+		
 		return Jwts.parser().setSigningKey(secretkey)
 	            .parseClaimsJws(token).getBody().getSubject();
 	}
 	
 	public String getRole(String token) {
+		
+		 if (!validateToken(token)) {
+		        throw new JwtException("Invalid token");
+		    }
+		 
         return (String) Jwts.parser().setSigningKey(secretkey)
             .parseClaimsJws(token).getBody().get("role");
     }
@@ -82,6 +91,5 @@ public class JwtTokenProvider {
 	{
 		return refreshTokenValidity;
 	}
-	
-	
+		
 }

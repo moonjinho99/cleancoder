@@ -35,7 +35,9 @@ public class PostService {
 	{
 		List<PostDataResponseDto> dtoList = new ArrayList<PostDataResponseDto>();		
 		
-		List<Post> postList = postRepository.findAll();
+		List<Post> postList = postRepository.findAll();		
+		
+
 		for(Post post : postList)
 		{
 			PostDataResponseDto dto = PostDataResponseDto.builder()
@@ -47,6 +49,7 @@ public class PostService {
 										.language(post.getLanguage())
 										.postType(post.getPostType())
 										.updateAt(post.getUpdatedAt())
+										.commentCnt(postCommentRepository.countComment(post.getId()))
 										.build();
 			
 			dtoList.add(dto);
@@ -79,6 +82,7 @@ public class PostService {
 		
 		Post post = postRepository.findById(id).get();
 		String writeUserName = userRepository.getById(post.getUser().getId()).getName();		
+		Long commentCnt = postCommentRepository.countComment(id);
 		
 		PostDataResponseDto postData = PostDataResponseDto.builder()
 										.writeUserName(writeUserName)
@@ -89,6 +93,7 @@ public class PostService {
 										.language(post.getLanguage())
 										.postType(post.getPostType())
 										.updateAt(post.getUpdatedAt())
+										.commentCnt(commentCnt)
 										.build();
 		
 		return ResponseEntity.ok(postData);
@@ -99,8 +104,7 @@ public class PostService {
 	{
 
 		List<PostComment> comments = postCommentRepository.findByPostId(id);
-		List<PostCommentResponseDto> commentDtoList = new ArrayList<>();
-		
+		List<PostCommentResponseDto> commentDtoList = new ArrayList<>();		
 		
 		for(PostComment comment : comments)
 		{

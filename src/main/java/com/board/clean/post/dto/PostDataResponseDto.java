@@ -20,5 +20,7 @@ public class PostDataResponseDto {
 	private String language;
 	private PostType postType;
 	private LocalDateTime updateAt;
+	private Long commentCnt;
+	private Long likeCnt;
 	
 }

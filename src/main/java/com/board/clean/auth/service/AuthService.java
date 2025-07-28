@@ -96,4 +96,18 @@ public class AuthService {
 		
 		return newAccessToken;
 	}
+	
+	public ResponseEntity<?> logout(String token)
+	{
+		if (token != null && jwtTokenProvider.validateToken(token)) {
+			
+			Long id = Long.parseLong(jwtTokenProvider.getId(token));		
+			refreshTokenRepository.deleteByUserId(id);			
+			
+	        return ResponseEntity.ok().body("로그아웃 완료");
+	    }		
+		
+		return null;
+	}
+	
 }

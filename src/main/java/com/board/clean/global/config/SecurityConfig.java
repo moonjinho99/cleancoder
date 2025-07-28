@@ -34,7 +34,9 @@ public class SecurityConfig {
             "/webjars/**",
             "/auth/**",
             "/",
-            "/post/**"          
+            "/post/**",
+            "/css/**",
+            "/js/**"
     };
 	
 	private static final String[] ACCESS_USER_PATH = {

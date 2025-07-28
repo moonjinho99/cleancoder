@@ -1,0 +1,33 @@
+<header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">CleanCoder</a>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="코드, 언어, 사용자를 검색해보세요...">
+                <button class="search-btn">🔍</button>
+            </div>
+            
+            <div class="header-actions">
+                <button class="write-btn" onclick="moveWritePage()">✏️ 코드 공유</button>
+				
+				<div class="profile-dropdown">
+				    <button class="profile-btn" onclick="toggleProfileDropdown()">
+				        <div style="background: linear-gradient(135deg, #9ACD32, #ADFF2F); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">김</div>
+				    </button>
+				    
+				    <div class="dropdown-menu" id="profileDropdown">
+				        <button class="dropdown-item" onclick="goToMyPage()">
+				            <span class="dropdown-item-icon">👤</span>
+				            <span class="dropdown-item-text">마이페이지</span>
+				        </button>
+				        <button class="dropdown-item logout" onclick="logout()">
+				            <span class="dropdown-item-icon">🚪</span>
+				            <span class="dropdown-item-text">로그아웃</span>
+				        </button>
+				    </div>
+				</div>
+                
+                
+            </div>
+        </div>
+    </header>

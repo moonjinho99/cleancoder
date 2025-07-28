@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,128 +15,6 @@
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
             line-height: 1.6;
-        }
-
-        /* 헤더 스타일 */
-        .header {
-            background: white;
-            padding: 15px 0;
-            border-bottom: 1px solid #e0e0e0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #9ACD32;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo::before {
-            content: '</>';
-            font-size: 32px;
-            color: #ADFF2F;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 500px;
-            margin: 0 30px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 50px 12px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            border-color: #9ACD32;
-            box-shadow: 0 0 0 3px rgba(154, 205, 50, 0.1);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #9ACD32;
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            cursor: pointer;
-            color: white;
-            font-size: 16px;
-            transition: background 0.3s ease;
-        }
-
-        .search-btn:hover {
-            background: #8BC34A;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .write-btn {
-            background: linear-gradient(135deg, #9ACD32, #ADFF2F);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .write-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 205, 50, 0.3);
-        }
-
-        .profile-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #9ACD32, #ADFF2F);
-            border: none;
-            cursor: pointer;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .profile-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .profile-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         /* 메인 컨테이너 */
@@ -351,28 +229,15 @@
                 padding: 10px 15px;
             }
         }
-    </style>
-</head>
-<body>
-    <!-- 헤더 -->
-    <header class="header">
-        <div class="header-content">
-            <a href="#" class="logo">CleanCoder</a>
-            
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="코드, 언어, 사용자를 검색해보세요...">
-                <button class="search-btn">🔍</button>
-            </div>
-            
-            <div class="header-actions">
-                <button class="write-btn" onclick="moveWritePage()">✏️ 코드 공유</button>
-                <button class="profile-btn" onclick="alert('프로필 메뉴가 열립니다!')">
-                    <div style="background: linear-gradient(135deg, #9ACD32, #ADFF2F); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">김</div>
-                </button>
-            </div>
-        </div>
-    </header>
 
+    </style>
+    
+    <link rel="stylesheet" href="/css/header.css">
+    
+</head>
+<body>    
+    <div th:replace="header :: header"></div>
+    
     <!-- 메인 컨테이너 -->
     <div class="main-container">
         <div class="feed" id="postFeed">
@@ -384,12 +249,16 @@
     </div>
 
     <script>
+    
+	    let userSession = null;
+	    let parseSession = null;
+    
         // 게시글 데이터를 로드하는 함수
         async function loadPosts() {
             try {
                 // 로그인 확인
-                const userSession = sessionStorage.getItem("userSession");                
-                const parseSession = JSON.parse(userSession);
+                userSession = sessionStorage.getItem("userSession");                
+                parseSession = JSON.parse(userSession);
                 
                  if (userSession == null || parseSession.accessToken == null) {
                     alert('로그인이 필요합니다.');
@@ -445,7 +314,7 @@
         // 개별 게시글 엘리먼트를 생성하는 함수
         function createPostElement(post) {
             const article = document.createElement('article');
-            article.className = 'post';
+            article.className = 'post'; 
             
             // 작성자 이름에서 첫 글자 추출 (아바타용)
             const avatarLetter = post.writeUserName ? post.writeUserName.charAt(0) : '?';
@@ -476,7 +345,7 @@
                         ❤️ <span>0</span>
                     </button>
                     <button class="action-btn" onclick="moveDetailPage(${post.postId})">
-                        💬 <span>0</span>
+                        💬 <span>${post.commentCnt}</span>
                     </button>
                 </div>                       
             `;
@@ -657,9 +526,16 @@
                     profileBtn.textContent = userSession.name.charAt(0);
                 }
             }
-            
+                                   
             // 게시글 로드
             loadPosts();
+            
+            document.addEventListener('click', function(e) {
+                const profileDropdown = document.querySelector('.profile-dropdown');
+                if (!profileDropdown.contains(e.target)) {
+                    closeProfileDropdown();
+                }
+            });
         });
 
         // 새로고침 함수 (전역적으로 사용 가능)
@@ -674,6 +550,70 @@
 		{
         	window.location.href = `/post/detail?id=${postId}`;
 		}        
+        
+        // 프로필 드롭다운 토글
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            const profileBtn = document.querySelector('.profile-btn');
+            
+            const isActive = dropdown.classList.contains('active');
+            
+            if (isActive) {
+                closeProfileDropdown();
+            } else {
+                dropdown.classList.add('active');
+                profileBtn.classList.add('active');
+            }
+        }
+
+        // 프로필 드롭다운 닫기
+        function closeProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            const profileBtn = document.querySelector('.profile-btn');
+            
+            dropdown.classList.remove('active');
+            profileBtn.classList.remove('active');
+        }
+
+        // 마이페이지로 이동
+        function goToMyPage() {
+            closeProfileDropdown();
+            // 마이페이지 URL로 이동 (실제 경로에 맞게 수정)
+            window.location.href = '/user/mypage';
+        }
+
+        // 로그아웃 함수
+        function logout() {
+            closeProfileDropdown();
+            
+            if (confirm('로그아웃 하시겠습니까?')) {
+                try {
+                    // 세션 스토리지에서 사용자 정보 제거
+                    sessionStorage.removeItem('userSession');
+                    
+                    // 로그아웃 API 호출 (선택적)
+                    if (parseSession && parseSession.accessToken) {
+                        fetch('/api/auth/logout', {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${parseSession.accessToken}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }).catch(error => {
+                            console.error('로그아웃 API 호출 실패:', error);
+                        });
+                    }
+                    
+                    // 로그인 페이지로 리다이렉트
+                    alert('로그아웃되었습니다.');
+                    window.location.href = '/auth/login';
+                } catch (error) {
+                    console.error('로그아웃 처리 오류:', error);
+                    alert('로그아웃 처리 중 오류가 발생했습니다.');
+                }
+            }
+        }
+        
     </script>
 </body>
 </html>

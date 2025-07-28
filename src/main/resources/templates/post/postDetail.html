@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,80 +16,7 @@
             background-color: #f8f9fa;
             line-height: 1.6;
         }
-
-        /* 헤더 스타일 */
-        .header {
-            background: white;
-            padding: 15px 0;
-            border-bottom: 1px solid #e0e0e0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #9ACD32;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo::before {
-            content: '</>';
-            font-size: 32px;
-            color: #ADFF2F;
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-            padding: 10px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: #f0f0f0;
-            color: #9ACD32;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #9ACD32, #ADFF2F);
-            border: none;
-            cursor: pointer;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .profile-btn:hover {
-            transform: scale(1.1);
-        }
-
+        
         /* 메인 컨테이너 */
         .main-container {
             max-width: 900px;
@@ -597,24 +524,12 @@
             }
         }
     </style>
+    
+    <link rel="stylesheet" href="/css/header.css">
 </head>
-<body>
-    <!-- 헤더 -->
-    <header class="header">
-        <div class="header-content">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <button class="back-btn" onclick="goBack()">←</button>
-                <a href="#" class="logo">CleanCoder</a>
-            </div>
-            
-            <div class="header-actions">
-                <button class="profile-btn" onclick="alert('프로필 메뉴가 열립니다!')">
-                    <div style="background: linear-gradient(135deg, #9ACD32, #ADFF2F); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">김</div>
-                </button>
-            </div>
-        </div>
-    </header>
-
+<body>       
+    <div th:replace="header :: header"></div>
+    
     <!-- 메인 컨테이너 -->
     <div class="main-container">
         <!-- 게시글 상세 -->
@@ -672,6 +587,13 @@
         // 페이지 로드 시 초기화
         window.addEventListener('load', function() {
             initializePage();
+            
+            document.addEventListener('click', function(e) {
+                const profileDropdown = document.querySelector('.profile-dropdown');
+                if (!profileDropdown.contains(e.target)) {
+                    closeProfileDropdown();
+                }
+            });
         });
 
         // 페이지 초기화
@@ -701,10 +623,10 @@
 
         // 사용자 아바타 업데이트
         function updateUserAvatars() {
-            if (userSession && userSession.name) {
+            if (parseSession && parseSession.name) {
                 const avatars = document.querySelectorAll('.comment-avatar, .profile-btn div');
                 avatars.forEach(avatar => {
-                    avatar.textContent = userSession.name.charAt(0);
+                    avatar.textContent = parseSession.name.charAt(0);
                 });
             }
         }
@@ -740,7 +662,7 @@
         }
 
         // 게시글 상세 렌더링
-        function renderPostDetail(post) {
+        function renderPostDetail(post) {       	
             const postDetail = document.getElementById('postDetail');
             const avatarLetter = post.writeUserName ? post.writeUserName.charAt(0) : '?';
             const timeAgo = formatTimeAgo(post.updateAt);
@@ -766,7 +688,7 @@
                         ❤️ <span>${post.likeCount || 0}</span>
                     </button>
                     <button class="action-btn">
-                        💬 <span id="postCommentCount">${post.commentCount || 0}</span>
+                        💬 <span id="postCommentCount">${post.commentCnt || 0}</span>
                     </button>
                 </div>
             `;
@@ -844,7 +766,7 @@
 
         // 개별 댓글 엘리먼트 생성
         function createCommentElement(comment) {
-            const avatarLetter = comment.authorName ? comment.authorName.charAt(0) : '?';
+            const avatarLetter = comment.writeUserName ? comment.writeUserName.charAt(0) : '?';
             const timeAgo = formatTimeAgo(comment.createdAt);
 
             return `
@@ -853,7 +775,7 @@
                         <div class="comment-author-avatar">${avatarLetter}</div>
                         <div class="comment-body">
                             <div>
-                                <span class="comment-author">${escapeHtml(comment.authorName || '익명')}</span>
+                                <span class="comment-author">${escapeHtml(comment.writeUserName || '익명')}</span>
                                 <span class="comment-time">${timeAgo}</span>
                             </div>
                             <div class="comment-text">${escapeHtml(comment.content)}</div>
@@ -1256,6 +1178,70 @@
                 submitBtn.style.opacity = '0.6';
             }
         });
+        
+        
+        // 프로필 드롭다운 토글
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            const profileBtn = document.querySelector('.profile-btn');
+            
+            const isActive = dropdown.classList.contains('active');
+            
+            if (isActive) {
+                closeProfileDropdown();
+            } else {
+                dropdown.classList.add('active');
+                profileBtn.classList.add('active');
+            }
+        }
+
+        // 프로필 드롭다운 닫기
+        function closeProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            const profileBtn = document.querySelector('.profile-btn');
+            
+            dropdown.classList.remove('active');
+            profileBtn.classList.remove('active');
+        }
+
+        // 마이페이지로 이동
+        function goToMyPage() {
+            closeProfileDropdown();
+            // 마이페이지 URL로 이동 (실제 경로에 맞게 수정)
+            window.location.href = '/user/mypage';
+        }
+
+        // 로그아웃 함수
+        function logout() {
+            closeProfileDropdown();
+            
+            if (confirm('로그아웃 하시겠습니까?')) {
+                try {
+                    // 세션 스토리지에서 사용자 정보 제거
+                    sessionStorage.removeItem('userSession');
+                    
+                    // 로그아웃 API 호출 (선택적)
+                    if (userSession && userSession.accessToken) {
+                        fetch('/api/auth/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${userSession.accessToken}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }).catch(error => {
+                            console.error('로그아웃 API 호출 실패:', error);
+                        });
+                    }
+                    
+                    // 로그인 페이지로 리다이렉트
+                    alert('로그아웃되었습니다.');
+                    window.location.href = '/auth/login';
+                } catch (error) {
+                    console.error('로그아웃 처리 오류:', error);
+                    alert('로그아웃 처리 중 오류가 발생했습니다.');
+                }
+            }
+        }
     </script>
 </body>
 </html>
